@@ -1,0 +1,84 @@
+<?php
+use Firebase\JWT\JWT;r
+
+// Function for authentication
+function authenticate($token, $secret_key)
+{
+    try {
+        // Decode the token
+        $decoded = JWT::decode($token, $secret_key, array('HS256'));
+        return true; // Authentication successful
+    } catch (Exception $e) {
+        return false; // Authentication failed
+    }
+}
+
+// Usage
+$secret_key = 'your_secret_key'; // Replace with your actual secret key
+$token = JWT::encode(['user_id' => 123], $secret_key, 'HS256');
+$result = authenticate($token, $secret_key);
+
+echo $result ? "Authentication successful" : "Authentication failed";
+
+// Endpoint for email notifications
+function sendEmailNotification($token, $recipient, $content, $secret_key)
+{
+    if (authenticate($token, $secret_key)) {
+        // Email sending logic with provided data
+        $subject = "Email Notification";
+        $headers = "From: aishanabe07@gmail.com";
+
+        // Use the mail() function for sending (adapt as needed)
+        $success = mail($recipient, $subject, $content, $headers);
+
+        return $success ? "Email notification sent successfully" : "Failed to send email notification";
+    } else {
+        return "Authentication error";
+    }
+}
+
+// Endpoint for SMS notifications
+function sendSMSNotification($token, $recipient, $content, $secret_key)
+{
+    if (authenticate($token, $secret_key)) {
+        // SMS sending logic with provided data
+        // Use an SMS service or API to send the SMS
+        // Return the status or success/failure message
+        return "Functionality not implemented";
+    } else {
+        return "Authentication error";
+    }
+}
+
+// Usage
+$emailResult = sendEmailNotification($token, "aishanabe@icloud.com", "Message content", $secret_key);
+$smsResult = sendSMSNotification($token, "+33763201576", "Message content", $secret_key);
+
+echo $emailResult . "<br>" . $smsResult;
+
+// Generic function for sending notifications
+function sendNotification($method, $token, $recipient, $content, $secret_key)
+{
+    if (authenticate($token, $secret_key)) {
+        // Notification sending logic
+        // Add specific checks and mechanisms for each service
+
+        if ($method === 'email') {
+            // For email sending
+            $subject = "Notification by email";
+            $headers = "From: aishanabe07@gmail.com";
+            $success = mail($recipient, $subject, $content, $headers);
+        } elseif ($method === 'sms') {
+            // For SMS sending
+            // Implement SMS sending logic
+            $success = true; // Assuming success for illustration purposes
+        } else {
+            $success = false; // Unsupported notification method
+        }
+
+        return $success ? "Notification sent successfully" : "Failed to send notification";
+    } else {
+        return "Authentication error";
+    }
+}
+o?>
